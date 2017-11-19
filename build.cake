@@ -65,6 +65,7 @@ var resharperReportsDirectory = buildDir + Directory("_ReSharperReports");
 var resharperReportsFile = resharperReportsDirectory + File("inspectcode-output.xml");
 
 Task("Run-Inspect-Code")
+    .WithCriteria(IsRunningOnWindows())
     .IsDependentOn("Restore-NuGet-Packages")
     .Does(() =>
 {
@@ -75,7 +76,8 @@ Task("Run-Inspect-Code")
     });
 });
 
-Task("Inspect-Code-Read-Issues")
+Task("Lint")
+    .WithCriteria(IsRunningOnwindows())
     .IsDependentOn("Run-Inspect-Code")
     .Does(() =>
 {
