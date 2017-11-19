@@ -1,9 +1,8 @@
 #tool nuget:?package=NUnit.ConsoleRunner&version=3.7.0
 #tool nuget:?package=JetBrains.ReSharper.CommandLineTools
-#tool nuget:?package=Cake.Prca.Issues.InspectCode
 
-#addin "Cake.Prca"
-#addin "Cake.Prca.Issues.InspectCode"
+#addin "Cake.Issues"
+#addin "Cake.Issues.InspectCode"
 
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
@@ -77,18 +76,18 @@ Task("Run-Inspect-Code")
 });
 
 Task("Lint")
-    .WithCriteria(IsRunningOnwindows())
+    .WithCriteria(IsRunningOnWindows())
     .IsDependentOn("Run-Inspect-Code")
     .Does(() =>
 {
     var settings =
         new ReadIssuesSettings(buildDir)
         {
-            Format = PrcaCommentFormat.Markdown
+            Format = IssueCommentFormat.Markdown
         };
 
     var issues = ReadIssues(
-        new List<ICodeAnalysisProvider>
+        new List<IIssueProvider>
         {
             InspectCodeIssuesFromFilePath(resharperReportsFile)
         },
