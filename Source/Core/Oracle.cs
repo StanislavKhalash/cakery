@@ -4,7 +4,7 @@
     {
         public int GetAnswer()
         {
-            return 0;
+            return 42;
         }
     }
 }
