@@ -61,7 +61,8 @@ Task("Run-Unit-Tests")
 });
 
 var resharperReportsDirectory = buildDir + Directory("_ReSharperReports");
-var resharperReportsFile = resharperReportsDirectory + File("inspectcode-output.xml");
+var inspectCodeReportsFile = resharperReportsDirectory + File("inspectcode-output.xml");
+var dupFinderReportsFile = resharperReportsDirectory + File("dupfinder-output.xmlie");
 
 Task("Run-Inspect-Code")
     .WithCriteria(IsRunningOnWindows())
@@ -71,7 +72,7 @@ Task("Run-Inspect-Code")
     InspectCode("./Client.sln", new InspectCodeSettings {
       SolutionWideAnalysis = true,
       ThrowExceptionOnFindingViolations = true,
-      OutputFile = resharperReportsFile
+      OutputFile = inspectCodeReportsFile
     });
 });
 
@@ -89,7 +90,7 @@ Task("Lint")
     var issues = ReadIssues(
         new List<IIssueProvider>
         {
-            InspectCodeIssuesFromFilePath(resharperReportsFile)
+            InspectCodeIssuesFromFilePath(inspectCodeReportsFile)
         },
         settings);
 
@@ -104,12 +105,27 @@ Task("Lint")
     }
 });
 
+Task("FindDuplicates")
+	.WithCriteria(IsRunningOnWindows())
+	.IsDependentOn("Build")
+	.Does(() =>
+{
+	DupFinder("./Client.sln", new DupFinderSettings {
+		ShowStats = true,
+		ShowText = true,
+		OutputFile = dupFinderReportsFile, 
+		ThrowExceptionOnFindingDuplicates = true
+    });
+});
+		
 //////////////////////////////////////////////////////////////////////
 // TASK TARGETS
 //////////////////////////////////////////////////////////////////////
 
 Task("Default")
-    .IsDependentOn("Run-Unit-Tests");
+    .IsDependentOn("Run-Unit-Tests")
+	.IsDependentOn("Lint")
+	.IsDependentOn("FindDuplicates");
 
 //////////////////////////////////////////////////////////////////////
 // EXECUTION
