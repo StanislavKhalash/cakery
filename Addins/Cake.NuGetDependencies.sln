@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2010
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cake.NuGetDependencies", "Cake.NuGetDependencies\Cake.NuGetDependencies.csproj", "{3828DDCE-7465-4C62-A3AD-AC4DE2ABB64C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3828DDCE-7465-4C62-A3AD-AC4DE2ABB64C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3828DDCE-7465-4C62-A3AD-AC4DE2ABB64C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3828DDCE-7465-4C62-A3AD-AC4DE2ABB64C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3828DDCE-7465-4C62-A3AD-AC4DE2ABB64C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FD21D21E-574C-4943-B8B8-1E39B4BC841F}
+	EndGlobalSection
+EndGlobal
