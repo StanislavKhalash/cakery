@@ -11,20 +11,20 @@ namespace Cake.NuGetDependencies
         {
             public string Name { get; set; }
 
-            public string License { get; set; }
+            public string LicenseUrl { get; set; }
 
-            public string Description { get; set; }
+            public string ProjectUrl { get; set; }
         }
 
         private readonly List<PackageInfo> _packages = new List<PackageInfo>();
 
-        public void AppendPackageInfo(string packageId, string licenseUrl, string description)
+        public void AppendPackageInfo(NuGet.ZipPackage package)
         {
             _packages.Add(new PackageInfo
             {
-                Name = packageId,
-                License = licenseUrl,
-                Description = Wrap(description)
+                Name = package.Id,
+                LicenseUrl = package.LicenseUrl.ToString(),
+                ProjectUrl = package.ProjectUrl.ToString()
             });
         }
 

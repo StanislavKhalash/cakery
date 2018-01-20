@@ -42,12 +42,9 @@ namespace Cake.NuGetDependencies
                 var packageFile = packageDirectory.GetFiles(searchFilter, SearchScope.Current).Last();
 
                 var fileStream = packageFile.Open(FileMode.Open, FileAccess.Read);
-                var zipPackage = new NuGet.ZipPackage(fileStream);
+                var package = new NuGet.ZipPackage(fileStream);
 
-                _outputFormatter.AppendPackageInfo(
-                    zipPackage.Id, 
-                    zipPackage.LicenseUrl.AbsolutePath, 
-                    zipPackage.Description);
+                _outputFormatter.AppendPackageInfo(package);
             }
 
             var outputFilePath = workingDirectory.Path.CombineWithFilePath(new FilePath("nuget-dependencies.md"));

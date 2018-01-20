@@ -2,7 +2,7 @@
 {
     public interface IOutputFormatter
     {
-        void AppendPackageInfo(string packageId, string licenseUrl, string description);
+        void AppendPackageInfo(NuGet.ZipPackage package);
 
         string GetOutput();
     }
