@@ -1,6 +1,7 @@
 ﻿using MarkdownLog;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Cake.NuGetDependencies
@@ -28,7 +29,15 @@ namespace Cake.NuGetDependencies
             });
         }
 
-        public string GetOutput() => _packages.ToMarkdownTable().ToString();
+        public string GetOutput()
+        {
+            return string.Join(
+                Environment.NewLine, 
+                _packages.ToMarkdownTable()
+                .ToString()
+                .SplitByLine()
+                .Select(it => it.TrimStart()));
+        }
 
         private static string Wrap(string longText)
         {
