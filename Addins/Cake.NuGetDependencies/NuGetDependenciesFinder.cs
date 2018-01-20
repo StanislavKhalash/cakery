@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Cake.Core.Diagnostics;
 using Cake.Core.IO;
 
 namespace Cake.NuGetDependencies
@@ -11,26 +10,27 @@ namespace Cake.NuGetDependencies
         private readonly DirectoryPath _targetDirectoryPath;
         private readonly DirectoryPath _workingDirectoryPath;
         private readonly IFileSystem _fileSystem;
-        private readonly ICakeLog _log;
+        private readonly IOutputFormatter _outputFormatter;
 
         public NuGetDependenciesFinder(
             DirectoryPath targetDirectoryPath, 
             DirectoryPath workingDirectoryPath,
             IFileSystem fileSystem, 
-            ICakeLog log)
+            IOutputFormatter outputFormatter)
         {
             _targetDirectoryPath = targetDirectoryPath;
             _workingDirectoryPath = workingDirectoryPath;
             _fileSystem = fileSystem;
-            _log = log;
+            _outputFormatter = outputFormatter;
         }
 
         public void Run()
         {
             var referencedPackages = GetReferencedPackages();
 
-            var localNugetCacheDirectory = _fileSystem
-                .GetDirectory(_workingDirectoryPath)
+            var workingDirectory = _fileSystem.GetDirectory(_workingDirectoryPath);
+
+            var localNugetCacheDirectory = workingDirectory
                 .GetDirectories("packages", SearchScope.Current)
                 .First();
 
@@ -41,7 +41,23 @@ namespace Cake.NuGetDependencies
                 var packageDirectory = localNugetCacheDirectory.GetDirectories(searchFilter, SearchScope.Current).Last();
                 var packageFile = packageDirectory.GetFiles(searchFilter, SearchScope.Current).Last();
 
-                DumpPackageInfo(packageFile);
+                var fileStream = packageFile.Open(FileMode.Open, FileAccess.Read);
+                var zipPackage = new NuGet.ZipPackage(fileStream);
+
+                _outputFormatter.AppendPackageInfo(
+                    zipPackage.Id, 
+                    zipPackage.LicenseUrl.AbsolutePath, 
+                    zipPackage.Description);
+            }
+
+            var outputFilePath = workingDirectory.Path.CombineWithFilePath(new FilePath("nuget-dependencies.md"));
+
+            using (var fileStream = _fileSystem.GetFile(outputFilePath).OpenWrite())
+            {
+                using (var streamWriter = new StreamWriter(fileStream))
+                {
+                    streamWriter.Write(_outputFormatter.GetOutput());
+                }
             }
         }
 
@@ -62,15 +78,6 @@ namespace Cake.NuGetDependencies
             }
 
             return packageNames;
-        }
-
-        private void DumpPackageInfo(IFile packageFile)
-        {
-            var fileStream = packageFile.Open(FileMode.Open, FileAccess.Read);
-            var zipPackage = new NuGet.ZipPackage(fileStream);
-
-            _log.Information(zipPackage.Description);
-            _log.Information(zipPackage.LicenseUrl);
         }
     }
 }

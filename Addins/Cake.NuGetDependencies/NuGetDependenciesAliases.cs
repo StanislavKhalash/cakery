@@ -9,7 +9,11 @@ namespace Cake.NuGetDependencies
         [CakeMethodAlias]
         public static void NuGetDependencies(this ICakeContext context, DirectoryPath tagetDirectoryPath)
         {
-            var runner = new NuGetDependenciesFinder(tagetDirectoryPath, context.Environment.WorkingDirectory, context.FileSystem, context.Log);
+            var runner = new NuGetDependenciesFinder(
+                tagetDirectoryPath, 
+                context.Environment.WorkingDirectory,
+                context.FileSystem, 
+                new MarkdownOutputFormatter());
             runner.Run();
         }
     }
